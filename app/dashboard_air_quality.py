@@ -1,7 +1,6 @@
 # ==========================================================
-# DASHBOARD DE QUALIDADE DO AR — VERSÃO OTIMIZADA E ESTILIZADA
+# DASHBOARD DE QUALIDADE DO AR
 # ==========================================================
-# Ferramenta: Dash + Plotly (v3+)
 # Execução:   python app/dashboard_air_quality.py
 # Acesso:     http://127.0.0.1:8050/
 # ==========================================================
