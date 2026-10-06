@@ -1,44 +1,25 @@
-# 🧾 Etapa 7 — Conclusão e Recomendações
+# Conclusão e próximos passos
 
-## 🎯 Síntese dos Resultados
-A análise revelou que **temperatura** e **velocidade do vento** têm impacto direto na dispersão dos poluentes atmosféricos — quanto maiores, menor a concentração média de partículas nocivas (PM2.5, PM10, NO₂). Já a **umidade** mostrou correlação levemente positiva, sugerindo que pode contribuir para a permanência de partículas suspensas.
+## Síntese baseada nos cálculos existentes
 
-O modelo de regressão linear serviu como ferramenta interpretativa, enquanto o **Random Forest** trouxe melhor desempenho ao capturar relações não lineares e interações entre variáveis ambientais.
+A etapa 4 investiga `Pollution_Index` a partir de temperatura, umidade, velocidade do vento e mês. O OLS ajustado à amostra completa tem R² de 0,002; os coeficientes meteorológicos registrados não são estatisticamente significativos a 5%. No teste aleatório da Random Forest, com 20% dos dados reservados, o R² é −0,082 e o RMSE é 16,519. Portanto, os resultados disponíveis não demonstram associação meteorológica confiável nem capacidade preditiva superior ao baseline da média.
 
----
+O R² médio de 0,974 do notebook 06 pertence a outro modelo que recebe como preditores os seis poluentes usados para formar o próprio alvo. É vazamento de alvo, não validação independente, e não deve ser usado para afirmar que a Random Forest tem alto poder preditivo. A [documentação da modelagem](Modelagem.md) detalha a diferença.
 
-## 📈 Principais Insights
-- **Temperatura** → Reduz a poluição (aumenta dispersão atmosférica).  
-- **Velocidade do vento** → Reduz a concentração de gases e partículas.  
-- **Umidade** → Mantém partículas em suspensão, elevando níveis de poluição.  
-- **Meses secos e frios** → Associados a maiores índices médios de poluição.  
-- **Diferenças regionais marcantes** → Cidades com tráfego intenso e clima estável tendem a apresentar piores níveis de qualidade do ar.
+## Limitações importantes
 
----
+- `Pollution_Index` é uma média aritmética simples dos seis campos de poluentes, e não um índice oficial. O dicionário atribui unidades distintas a esses campos; a combinação precisa ser justificada ou redefinida antes de interpretação física ou sanitária.
+- Os dados processados são de 2023; não permitem descrever tendência de longo prazo.
+- O modelo da etapa 4 não controla cidade/país, e sua divisão aleatória não avalia transferência para novos locais ou períodos.
+- Os resultados são observacionais e não estabelecem causalidade.
 
-## ⚙️ Limitações
-- Base de dados cobre apenas **um ano (2023)**.  
-- Faltam **variáveis socioeconômicas** (população, frota veicular, políticas ambientais).  
-- Modelos testados ainda simplificam a dinâmica atmosférica (não capturam feedbacks meteorológicos).  
+## Próximos passos recomendados
 
----
+1. Verificar a fonte e as unidades dos poluentes e definir um alvo comparável, documentado e sem ambiguidade.
+2. Reexecutar a validação com baseline explícito e separação por cidade ou período, de acordo com a pergunta pretendida.
+3. Manter fora de `X` qualquer variável que componha matematicamente o alvo; tratar o experimento do notebook 06 como demonstração de vazamento, não como resultado de performance.
+4. Só então comparar modelos e relatar métricas de teste, incerteza e limitações.
 
-## 🚀 Recomendações
-1. Expandir o dataset temporal (múltiplos anos) e geográfico (mais cidades).  
-2. Integrar variáveis complementares: densidade populacional, consumo de combustível e tipo de transporte predominante.  
-3. Implementar modelos explicáveis com **XGBoost + SHAP** para análises mais robustas.  
-4. Criar alertas automáticos no dashboard com base em limiares de qualidade do ar.  
-5. Publicar o dashboard online (Render, Railway ou Vercel) e incluir no portfólio.  
+## Conclusão
 
----
-
-## 💡 Próximos Passos
-- Aplicar pipelines automatizados (Airflow ou Prefect) para atualizar os dados.  
-- Criar relatórios mensais automáticos via Python e Plotly.  
-- Usar APIs em tempo real (World Air Quality, OpenWeather) para previsões futuras.  
-
----
-
-## 🧭 Conclusão Final
-O projeto demonstrou a capacidade de integrar **ciência de dados, estatística e design interativo** em um fluxo completo — da coleta ao storytelling visual.  
-Os resultados reforçam que **fatores meteorológicos e padrões urbanos** são determinantes diretos da qualidade do ar em grandes cidades, servindo de base para políticas ambientais mais eficientes.
+O repositório contém um fluxo exploratório e um dashboard, mas os modelos atuais não comprovam que temperatura, umidade, vento ou sazonalidade expliquem ou prevejam o índice composto. A apresentação profissional dos resultados deve destacar essa incerteza e evitar conclusões causais ou de desempenho que os cálculos não sustentam.

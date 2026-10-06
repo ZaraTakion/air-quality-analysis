@@ -1,111 +1,35 @@
-# 📊 Dashboard Interativo — Air Quality Analysis
+# Dashboard interativo — Air Quality Analysis
 
-## 🎯 Objetivo
+## Objetivo e dados
 
-O dashboard foi desenvolvido para **visualizar e comunicar insights ambientais** de forma dinâmica e acessível.
-Ele integra dados de qualidade do ar e variáveis meteorológicas, permitindo identificar padrões e anomalias entre diferentes cidades e períodos.
+O app em [`app/dashboard_air_quality.py`](../app/dashboard_air_quality.py) é um painel exploratório de uma cidade por vez, usando `data/processed/air_quality_clean.csv`. O código converte `Date` para data, deriva o mês e recalcula o índice pela média aritmética de `PM2.5`, `PM10`, `NO2`, `SO2`, `CO` e `O3`. O índice é uma composição específica deste projeto, não um índice oficial; veja [`data_dictionary.md`](data_dictionary.md).
 
----
+## Controles e indicadores
 
-## 🧩 Estrutura e Funcionalidades
+O único controle do layout é um seletor de cidade, inicialmente “Tokyo”. O painel não possui seletor de intervalo de datas, filtro de poluente ou comparação de cidades.
 
-### 1️⃣ **Visão Geral**
+| Componente | Cálculo apresentado |
+|---|---|
+| Índice Médio | Média do `Índice de Poluição` nas linhas da cidade selecionada. |
+| Mês Mais Crítico | Mês com a maior média mensal do índice naquela cidade. |
+| Menor PM2.5 | Menor valor de `PM2.5` encontrado nas linhas da cidade. |
+| Tendência Mensal | Média mensal do índice por mês do ano para a cidade selecionada. |
+| Relação Clima × Poluição | Dispersão de `Temperature` versus índice; cor representa `Humidity` e tamanho representa `Wind Speed`. |
+| Distribuição dos Poluentes | Boxplots de `PM2.5`, `PM10`, `NO2`, `SO2`, `CO` e `O3` para a cidade selecionada. |
 
-* Mostra **índices médios de poluição por cidade** com base no `Pollution_Index`.
-* Permite **comparar variáveis ambientais** (Temperatura, Umidade, Velocidade do Vento) e poluentes (PM2.5, PM10, NO₂, SO₂, CO, O₃).
-* Oferece filtros por cidade e período para análises segmentadas.
+As visualizações são descritivas. Um padrão visual não estabelece que as variáveis meteorológicas causem mudanças no índice; os resultados da etapa de modelagem também não sustentam essa conclusão atualmente.
 
-### 2️⃣ **Componentes Interativos**
+## Executar localmente
 
-| Componente             | Função                                            |
-| ---------------------- | ------------------------------------------------- |
-| **Dropdowns**          | Selecionar cidade ou variável a analisar          |
-| **Gráficos de Linha**  | Exibir tendência temporal dos índices de poluição |
-| **Gráficos de Barras** | Comparar médias entre diferentes cidades          |
-| **Mapa (opcional)**    | Visualizar dispersão geográfica de poluentes      |
-| **Cards Numéricos**    | Mostrar KPIs como média de CO₂ e PM2.5            |
-
-### 3️⃣ **Tecnologias Utilizadas**
-
-* **Dash (Plotly)** — base do dashboard interativo
-* **Pandas** — manipulação dos dados
-* **Plotly Express** — geração dos gráficos
-* **Bootstrap CSS** — layout responsivo e limpo
-
----
-
-## 🧠 Storytelling e Interpretação
-
-O dashboard foi projetado com foco em **narrativa de dados (data storytelling)**:
-
-* Cada visualização responde a uma pergunta específica:
-
-  * *Quais cidades apresentam maior poluição média?*
-  * *Como temperatura e umidade afetam os níveis de partículas finas?*
-  * *Quais meses concentram picos de poluição?*
-* A combinação de **cores e interatividade** facilita a interpretação de tendências sem sobrecarregar o usuário.
-
----
-
-## 🧱 Arquitetura do Código
-
-Localização: `app/dashboard_air_quality.py`
-
-Principais blocos:
-
-```python
-# Importações e configuração
-import dash
-from dash import dcc, html
-import plotly.express as px
-import pandas as pd
-
-# Leitura do dataset processado
-df = pd.read_csv("../data/processed/air_quality_clean.csv")
-
-# Layout principal
-app.layout = html.Div([
-    html.H1("Air Quality Dashboard"),
-    dcc.Dropdown(id="city", options=[...], value="São Paulo"),
-    dcc.Graph(id="pollution_trend"),
-])
-```
-
----
-
-## ⚙️ Deploy e Execução
-
-### Local
+Execute a partir da raiz do repositório, pois o caminho do CSV no código é relativo à raiz:
 
 ```bash
-cd app
-python dashboard_air_quality.py
+python -m pip install -r requirements.txt
+python app/dashboard_air_quality.py
 ```
 
-Acesse: [http://127.0.0.1:8050](http://127.0.0.1:8050)
+Abra `http://127.0.0.1:8050/`.
 
-### Cloud (opcional)
+## Limites conhecidos na documentação e interface
 
-* **Render / Railway / Vercel** — pode hospedar o app gratuitamente.
-* Configure o `Procfile`:
-
-  ```
-  web: python app/dashboard_air_quality.py
-  ```
-
----
-
-## 📈 Benefícios do Dashboard
-
-* Interface acessível para não-especialistas.
-* Atualizável conforme novos dados são adicionados.
-* Suporte à tomada de decisão por **órgãos ambientais** e **instituições de pesquisa**.
-
----
-
-## 🧭 Conclusão
-
-O dashboard se consolidou como a camada de **comunicação visual e interpretativa** do projeto, permitindo transformar análises técnicas em **insights acionáveis e compreensíveis**.
-Ele reforça o papel da visualização de dados como ponte entre ciência, políticas públicas e o público geral.
-
----
+O dashboard rotula a velocidade do vento como km/h no gráfico de dispersão, enquanto o dicionário atual descreve `Wind Speed` em m/s. A unidade precisa ser confirmada na fonte antes de alterar esse rótulo. O app também recalcula `Índice de Poluição`, embora a coluna `Pollution_Index` já esteja no CSV processado; as duas fórmulas são atualmente iguais no código. Confirme a definição e as unidades antes de interpretar esse índice.
